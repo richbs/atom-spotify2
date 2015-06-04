@@ -1,6 +1,6 @@
 # atom-spotify2 :notes:
 
-__[atom-spotify] was no longer mantainer, so I forked it an updated it__
+__[atom-spotify] was no longer mantained, so I forked it and resolved all the deprecations__
 
 Displays the currently playing song in Spotify in Atom's status bar.
 
