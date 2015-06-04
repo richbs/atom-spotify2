@@ -1,4 +1,6 @@
-# atom-spotify :notes:
+# atom-spotify2 :notes:
+
+__[atom-spotify] was no longer mantainer, so I forked it an updated it__
 
 Displays the currently playing song in Spotify in Atom's status bar.
 
@@ -12,3 +14,5 @@ Use the following key commands to control Spotify from inside Atom:
 Or use the menu items in *Packages -> Spotify*.
 
 Pull requests welcome (and encouraged!)
+
+[atom-spotify]: https://github.com/jakemarsh/atom-spotify
