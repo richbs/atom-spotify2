@@ -3,7 +3,7 @@
   "main": "./lib/atom-spotify",
   "version": "2.0.0",
   "description": "Displays the currently playing song in Spotify in Atom's status bar",
-  "repository": "https://github.com/jakemarsh/atom-spotify",
+  "repository": "https://github.com/albertorestifo/atom-spotify2",
   "os": [
     "darwin"
   ],
