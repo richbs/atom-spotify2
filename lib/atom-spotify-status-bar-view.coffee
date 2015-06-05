@@ -38,7 +38,7 @@ class AtomSpotifyStatusBarView extends HTMLElement
     atom.commands.add 'atom-workspace', 'atom-spotify:pause', => spotify.pause => @updateTrackInfo()
     atom.commands.add 'atom-workspace', 'atom-spotify:togglePlay', => @togglePlay()
 
-    atom.config.observe 'atom-spotify.showEqualizer', (newValue) =>
+    atom.config.observe 'atom-spotify2.showEqualizer', (newValue) =>
       @toggleShowEqualizer(newValue)
 
     setInterval =>
@@ -53,15 +53,15 @@ class AtomSpotifyStatusBarView extends HTMLElement
             spotify.getTrack (error, track) =>
               if track
                 trackInfoText = ""
-                if atom.config.get('atom-spotify.showPlayStatus')
-                  if !atom.config.get('atom-spotify.showPlayIconAsText')
+                if atom.config.get('atom-spotify2.showPlayStatus')
+                  if !atom.config.get('atom-spotify2.showPlayIconAsText')
                     trackInfoText = if state.state == 'playing' then '► ' else '|| '
                   else
                     trackInfoText = if state.state == 'playing' then 'Now Playing: ' else 'Paused: '
                 trackInfoText += "#{track.artist} - #{track.name}"
 
-                if !atom.config.get('atom-spotify.showEqualizer')
-                  if atom.config.get('atom-spotify.showPlayStatus')
+                if !atom.config.get('atom-spotify2.showEqualizer')
+                  if atom.config.get('atom-spotify2.showPlayStatus')
                     trackInfoText += " ♫"
                   else
                     trackInfoText = "♫ " + trackInfoText
@@ -100,32 +100,4 @@ class AtomSpotifyStatusBarView extends HTMLElement
 
 module.exports = document.registerElement('status-bar-spotify',
                                           prototype: AtomSpotifyStatusBarView.prototype,
-                                          extends: 'div')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# module.exports =
-# class AtomSpotifyStatusBarView extends View
-#   @content: ->
-#     @div class: 'spotify inline-block', =>
-#       @div outlet: 'container', class: 'spotify-container', =>
-#         @span outlet: 'soundBars', 'data-hidden': true, 'data-state': 'paused', class: 'spotify-sound-bars', =>
-#           @span class: 'spotify-sound-bar'
-#           @span class: 'spotify-sound-bar'
-#           @span class: 'spotify-sound-bar'
-#           @span class: 'spotify-sound-bar'
-#           @span class: 'spotify-sound-bar'
-#         @span outlet: "trackInfo", class: 'atom-spotify-status', tabindex: '-1', ""
+                                          extends: 'div');

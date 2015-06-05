@@ -2,10 +2,18 @@ AtomSpotifyStatusBarView = require './atom-spotify-status-bar-view'
 
 module.exports =
   config:
-    displayOnLeftSide: true
-    showEqualizer: false
-    showPlayStatus: true
-    showPlayIconAsText: false
+    displayOnLeftSide:
+      type: 'boolean'
+      default: true
+    showEqualizer:
+      type: 'boolean'
+      defautl: false
+    showPlayStatus:
+      type: 'boolean'
+      default: true
+    showPlayIconAsText:
+      type: 'boolean'
+      default: false
 
   activate: ->
     atom.packages.onDidActivateInitialPackages =>
@@ -15,7 +23,7 @@ module.exports =
 
       @spotifyView.initialize()
 
-      if atom.config.get('atom-spotify.displayOnLeftSide')
+      if atom.config.get('atom-spotify2.displayOnLeftSide')
         @statusBar.addLeftTile(item: @spotifyView, priority: 100)
       else
         @statusBar.addRightTile(item: @spotifyView, priority: 100)
