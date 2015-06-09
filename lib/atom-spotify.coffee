@@ -7,7 +7,7 @@ module.exports =
       default: true
     showEqualizer:
       type: 'boolean'
-      defautl: false
+      default: false
     showPlayStatus:
       type: 'boolean'
       default: true
