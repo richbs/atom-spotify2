@@ -1,7 +1,7 @@
 {
   "name": "atom-spotify2",
   "main": "./lib/atom-spotify",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "Displays the currently playing song in Spotify in Atom's status bar",
   "repository": "https://github.com/albertorestifo/atom-spotify2",
   "os": [
