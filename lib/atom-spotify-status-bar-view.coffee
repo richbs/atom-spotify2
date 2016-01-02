@@ -43,7 +43,7 @@ class AtomSpotifyStatusBarView extends HTMLElement
 
     setInterval =>
       @updateTrackInfo()
-    , 5000
+    , 10000
 
   updateTrackInfo: () ->
     spotify.isRunning (err, isRunning) =>
@@ -52,6 +52,7 @@ class AtomSpotifyStatusBarView extends HTMLElement
           if state
             spotify.getTrack (error, track) =>
               if track
+                console.log track
                 trackInfoText = ""
                 if atom.config.get('atom-spotify2.showPlayStatus')
                   if !atom.config.get('atom-spotify2.showPlayIconAsText')
@@ -67,6 +68,11 @@ class AtomSpotifyStatusBarView extends HTMLElement
                     trackInfoText = "♫ " + trackInfoText
 
                 @trackInfo.textContent = trackInfoText
+                @coverArt = document.createElement('img')
+                @coverArt.classList.add('foo')
+                @coverArt.setAttribute('src', 'https://i.scdn.co/image/c61f7be95d1f892a6b4bddd60dd0bb5d99e5fc66')
+                @coverArt.setAttribute('height', '24')
+                @trackInfo.insertBefore(@coverArt, @trackInfo.firstChild)
               else
                 @trackInfo.textContent = ''
               @updateEqualizer()
