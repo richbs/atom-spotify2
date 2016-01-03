@@ -1,4 +1,5 @@
 spotify = require 'spotify-node-applescript'
+https = require 'https'
 
 Number::times = (fn) ->
   do fn for [1..@valueOf()] if @valueOf()
@@ -27,8 +28,16 @@ class AtomSpotifyStatusBarView extends HTMLElement
 
     @trackInfo = document.createElement('span')
     @trackInfo.classList.add('track-info')
+    @trackInfo.setAttribute('data-prev', '')
     @trackInfo.textContent = ''
     div.appendChild(@trackInfo)
+
+    @coverArt = document.createElement('img')
+    @coverArt.classList.add('foo')
+    @coverArt.setAttribute('id', 'atom-spotify2-cover-art')
+    @coverArt.setAttribute('src', 'https://i.scdn.co/image/c61f7be95d1f892a6b4bddd60dd0bb5d99e5fc66')
+    @coverArt.setAttribute('height', '24')
+    div.insertBefore(@coverArt, @trackInfo)
 
     @appendChild(div)
 
@@ -43,7 +52,7 @@ class AtomSpotifyStatusBarView extends HTMLElement
 
     setInterval =>
       @updateTrackInfo()
-    , 10000
+    , 3000
 
   updateTrackInfo: () ->
     spotify.isRunning (err, isRunning) =>
@@ -68,11 +77,20 @@ class AtomSpotifyStatusBarView extends HTMLElement
                     trackInfoText = "♫ " + trackInfoText
 
                 @trackInfo.textContent = trackInfoText
-                @coverArt = document.createElement('img')
-                @coverArt.classList.add('foo')
-                @coverArt.setAttribute('src', 'https://i.scdn.co/image/c61f7be95d1f892a6b4bddd60dd0bb5d99e5fc66')
-                @coverArt.setAttribute('height', '24')
-                @trackInfo.insertBefore(@coverArt, @trackInfo.firstChild)
+                trackId = track.id.split(':').pop()
+
+                apiData = ''
+                console.log 'before HTTP'
+                art = @coverArt
+                https.get 'https://api.spotify.com/v1/tracks/' + trackId, (res) ->
+                  res.on 'data', (chunk) ->
+                    apiData += chunk.toString()
+                  res.on 'end', () ->
+                    apiParsed = JSON.parse apiData
+                    thumbnail = apiParsed.album.images.pop()
+                    art.setAttribute('src', thumbnail.url)
+                    console.log art, thumbnail
+                console.log 'after HTTP'
               else
                 @trackInfo.textContent = ''
               @updateEqualizer()
