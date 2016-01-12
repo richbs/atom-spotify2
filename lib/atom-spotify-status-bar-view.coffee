@@ -28,7 +28,11 @@ class AtomSpotifyStatusBarView extends HTMLElement
 
     @trackInfo = document.createElement('span')
     @trackInfo.classList.add('track-info')
-    @trackInfo.setAttribute('data-prev', '')
+    @trackInfo.dataset.prev = ''
+    @trackInfo.dataset.track = ''
+    @trackInfo.dataset.album = ''
+    @trackInfo.dataset.artist = ''
+    @trackInfo.dataset.spotifyId = ''
     @trackInfo.textContent = ''
     div.appendChild(@trackInfo)
 
@@ -38,6 +42,11 @@ class AtomSpotifyStatusBarView extends HTMLElement
     @coverArt.setAttribute('src', 'https://i.scdn.co/image/c61f7be95d1f892a6b4bddd60dd0bb5d99e5fc66')
     @coverArt.setAttribute('height', '24')
     div.insertBefore(@coverArt, @trackInfo)
+
+    @playState = document.createElement('span')
+    @playState.setAttribute('id', 'atom-spotify2-play-state')
+    @playState.setAttribute('data-play-state', 'unknown')
+    div.insertBefore(@playState, @trackInfo)
 
     @appendChild(div)
 
@@ -61,36 +70,44 @@ class AtomSpotifyStatusBarView extends HTMLElement
           if state
             spotify.getTrack (error, track) =>
               if track
-                console.log track
-                trackInfoText = ""
+                currentPlayState = @playState.dataset.playState
+
+                playStateText = ""
                 if atom.config.get('atom-spotify2.showPlayStatus')
-                  if !atom.config.get('atom-spotify2.showPlayIconAsText')
-                    trackInfoText = if state.state == 'playing' then '► ' else '|| '
-                  else
-                    trackInfoText = if state.state == 'playing' then 'Now Playing: ' else 'Paused: '
-                trackInfoText += "#{track.artist} - #{track.name}"
+                  if @playState.dataset.playState != state.state
+                    if !atom.config.get('atom-spotify2.showPlayIconAsText')
+                      playStateText = if state.state == 'playing' then '► ' else '|| '
+                    else
+                      playStateText = if state.state == 'playing' then 'Now Playing: ' else 'Paused: '
+                    @playState.textContent = playStateText
+                console.log track.id, @trackInfo.dataset.spotifyId
+                if track.id != @trackInfo.dataset.spotifyId
+                  trackInfoText = "#{track.artist} - #{track.name}"
 
-                if !atom.config.get('atom-spotify2.showEqualizer')
-                  if atom.config.get('atom-spotify2.showPlayStatus')
-                    trackInfoText += " ♫"
-                  else
-                    trackInfoText = "♫ " + trackInfoText
+                  if !atom.config.get('atom-spotify2.showEqualizer')
+                    if atom.config.get('atom-spotify2.showPlayStatus')
+                      trackInfoText += " ♫"
+                    else
+                      trackInfoText = "♫ " + trackInfoText
 
-                @trackInfo.textContent = trackInfoText
-                trackId = track.id.split(':').pop()
-
-                apiData = ''
-                console.log 'before HTTP'
-                art = @coverArt
-                https.get 'https://api.spotify.com/v1/tracks/' + trackId, (res) ->
-                  res.on 'data', (chunk) ->
-                    apiData += chunk.toString()
-                  res.on 'end', () ->
-                    apiParsed = JSON.parse apiData
-                    thumbnail = apiParsed.album.images.pop()
-                    art.setAttribute('src', thumbnail.url)
-                    console.log art, thumbnail
-                console.log 'after HTTP'
+                  @trackInfo.textContent = trackInfoText
+                  @trackInfo.dataset.track = track.name
+                  @trackInfo.dataset.album = track.album
+                  @trackInfo.dataset.artist = track.artist
+                  @trackInfo.dataset.spotifyId = track.id
+                  # Call the API
+                  trackId = track.id.split(':').pop()
+                  apiData = ''
+                  console.log 'before HTTP'
+                  art = @coverArt
+                  https.get 'https://api.spotify.com/v1/tracks/' + trackId, (res) ->
+                    res.on 'data', (chunk) ->
+                      apiData += chunk.toString()
+                    res.on 'end', () ->
+                      apiParsed = JSON.parse apiData
+                      thumbnail = apiParsed.album.images.pop()
+                      art.setAttribute('src', thumbnail.url)
+                  console.log 'after HTTP'
               else
                 @trackInfo.textContent = ''
               @updateEqualizer()
